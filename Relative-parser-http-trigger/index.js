@@ -10,6 +10,7 @@ function parseMinElevData (data) {
       .filter(mail => !(mail === ''))
   } catch (error) {
     console.error('Error in parsing of data. Message: \n', error)
+    return
   }
 
   return {
@@ -24,9 +25,15 @@ module.exports = async function (context, req) {
   }
 
   if (response) {
+    // Return senders mail and recipients mail
     context.res = {
       status: 200,
       body: response
+    }
+    // Send request body forward
+    context.respipe = {
+      status: 200,
+      body: base64ToObj(req.body.ContentData)
     }
   } else {
     context.res = {

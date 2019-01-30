@@ -15,25 +15,24 @@ function parseMinElevData (data) {
 
   return {
     sender: jsonData.userMail,
-    recipients: recipientsMail
+    recipients: recipientsMail,
+    document: jsonData.document
   }
 }
 
 module.exports = async function (context, req) {
+  var response
   if (req.body && req.body.ContentData) {
-    var response = parseMinElevData(req.body.ContentData)
+    response = parseMinElevData(req.body.ContentData)
+  } else {
+    response = parseMinElevData(req.body)
   }
 
   if (response) {
-    // Return senders mail and recipients mail
+    // Return sender's and recipients' mail
     context.res = {
       status: 200,
       body: response
-    }
-    // Send request body forward
-    context.respipe = {
-      status: 200,
-      body: base64ToObj(req.body.ContentData)
     }
   } else {
     context.res = {
